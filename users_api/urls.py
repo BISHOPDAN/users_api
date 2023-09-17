@@ -9,10 +9,10 @@ from rest_framework import permissions
 
 base_schema_view = get_schema_view(
     openapi.Info(
-        title="QuizBase Project API",
+        title="Users Project API",
         default_version='v1',
         description="Api documentation for all of the endpoints\
-available from QuizBase.",
+available from Users.",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email=""),
         license=openapi.License(name="BSD License"),
@@ -24,7 +24,7 @@ available from QuizBase.",
 
 doc_urls = [
     path(
-        'quizs/',
+        'dan/',
         base_schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui'),
 ]
