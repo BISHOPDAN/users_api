@@ -3,10 +3,10 @@
  <img src="https://www.python.org/static/img/python-logo@2x.png" alt="Project logo"></a>
 </p>
 
-<h3 align="center">QuizBase REST API</h3>
+<h3 align="center">Users REST API</h3>
 
 
-<p align="center"> Django Rest Framework project with full QuizBase API features
+<p align="center"> Django Rest Framework project with full User API features
     <br> 
 </p>
 
@@ -41,8 +41,8 @@ A step by step series of examples that tell you how to get a development environ
 Clone the project
 
 ```bash
-git clone https://github.com/BISHOPDAN/quizbase_api.git
-cd quizbase_api
+git clone https://github.com/BISHOPDAN/users_api.git
+cd users_api
 ```
 
 Setup env & install dependencies
@@ -53,7 +53,7 @@ Linux
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cd quizbase_api
+cd users_api
 mkdir logs
 ```
 
@@ -63,7 +63,7 @@ Windows
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-cd quizbase_api
+cd users_api
 mkdir logs
 ```
 
@@ -105,7 +105,7 @@ To run the API on your local system.
 python manage.py runserver
 ```
 
-API server will run on `http://localhost:8000/`. Visit [Swagger](http://localhost:8000/quizs/) to read the Swagger API documentation.
+API server will run on `http://localhost:8000/`. Visit [Swagger](http://localhost:8000/dan/) to read the Swagger API documentation.
 
 
 ## Contributing
