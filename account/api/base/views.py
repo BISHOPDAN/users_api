@@ -1,6 +1,7 @@
 from account.models import Profile, User
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -16,7 +17,7 @@ from utils.base.errors import ApiResponse
 from utils.base.general import get_tokens_for_user
 
 from . import serializers
-from .permissions import BasicPerm, SuperPerm
+from .permissions import SuperPerm
 from .tokens import password_reset_generator
 from .utils import send_verification_email
 
@@ -27,7 +28,7 @@ class TokenVerifyAPIView(APIView):
     access token is still valid and returns the user info.
     """
 
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         request_body=serializers.JWTTokenValidateSerializer,
@@ -46,7 +47,7 @@ class TokenVerifyAPIView(APIView):
 
 
 class TokenRefreshAPIView(APIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
     serializer_class = TokenRefreshSerializer
 
     @swagger_auto_schema(
@@ -73,7 +74,7 @@ class TokenRefreshAPIView(APIView):
 
 
 class LoginAPIView(APIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [AllowAny]
     serializer_class = serializers.LoginSerializer
 
     @swagger_auto_schema(
@@ -122,7 +123,7 @@ class LoginAPIView(APIView):
 
 
 class RegisterAPIView(APIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [AllowAny]
     serializer_class = serializers.RegisterSerializer
 
     def create(self, request, *args, **kwargs):
@@ -174,7 +175,7 @@ class ResendEmailVerificationView(generics.GenericAPIView):
 
 
 class ValidateEmailVerificationTokenView(generics.GenericAPIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [AllowAny]
     serializer_class = serializers.EmailTokenValidateSerializer
 
     @swagger_auto_schema(
@@ -195,7 +196,7 @@ class ValidateEmailVerificationTokenView(generics.GenericAPIView):
 
 
 class ForgetPasswordView(APIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         responses={
@@ -235,7 +236,7 @@ class ForgetPasswordView(APIView):
 
 
 class ValidateResetPasswordTokenView(generics.GenericAPIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
     serializer_class = serializers.ResetPasswordTokenValidateSerializer
 
     @swagger_auto_schema(
@@ -252,7 +253,7 @@ class ValidateResetPasswordTokenView(generics.GenericAPIView):
 
 
 class ForgetResetPasswordView(APIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.object
@@ -277,47 +278,17 @@ class ForgetResetPasswordView(APIView):
         return User.objects.filter(active=True)
 
 
-class ChangePasswordView(generics.UpdateAPIView):
-    permission_classes = (BasicPerm,)
-    serializer_class = serializers.ChangePasswordSerializer
-    http_method_names = ['patch']
-
-    def get_object(self):
-        return self.request.user
-
-    def get_queryset(self):
-        return User.objects.filter(active=True)
-
-
 class UserListView(generics.ListAPIView):
-    permission_classes = (BasicPerm,)
+    permission_classes = (SuperPerm,)
     serializer_class = serializers.UserSerializer
 
     def get_queryset(self):
         return User.objects.all().order_by('email')
 
 
-class UserAPIView(generics.RetrieveUpdateAPIView):
-    permission_classes = (BasicPerm,)
-    serializer_class = serializers.UserSerializer
-    http_method_names = ['get', 'patch']
-
-    def get_queryset(self):
-        return User.objects.all()
-
-    def get_object(self):
-        return self.request.user
-
-    def get(self, request, *args, **kwargs):
-        # Get the user data
-        response_data = self.get_serializer_class()(request.user).data
-
-        return Response(data=response_data)
-
-
 class ProfileAPIView(generics.RetrieveUpdateAPIView):
     lookup_field = 'id'
-    permission_classes = (BasicPerm,)
+    permission_classes = [IsAuthenticated]
     serializer_class = serializers.ProfileSerializer
     http_method_names = ['get', 'patch']
 

@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     # neccesary for postgres full text search
     'django.contrib.postgres',
     'account',
-    'project_api_key',
 
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
         'rest_framework.permissions.IsAuthenticated',
     ),
 
@@ -77,8 +77,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-API_KEY_HEADER = "HTTP_BEARER_API_KEY"
-API_SEC_KEY_HEADER = "HTTP_BEARER_SEC_API_KEY"
+#API_KEY_HEADER = "HTTP_BEARER_API_KEY"
+#API_SEC_KEY_HEADER = "HTTP_BEARER_SEC_API_KEY"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -95,12 +95,6 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    "Bearer-Api-Key",
-    "Bearer-Sec-Api-Key",
-]
-
 
 SWAGGER_SETTINGS = {
     'DEFAULT_AUTO_SCHEMA_CLASS': 'utils.base.schema.BaseSchema',

@@ -1,5 +1,4 @@
-from project_api_key.permissions import has_staff_key
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 from utils.base.general import check_raise_exc
 from utils.base.logger import err_logger, logger  # noqa
 
@@ -22,22 +21,6 @@ is_auth_normal = IsAuthenticated()
 
 class SuperPerm(BasePermission):
     """
-    Permission to check if user uses a staff project
-    api key or is an authenticated admin
-    """
-
-    def has_permission(self, request, view):
-        # Check if the user has staff project api key
-        if has_staff_key.has_permission(request, view):
-            return True
-
-        # Check if the user is an authenticated admin
-        if is_auth_admin.has_permission(request, view):
-            return True
-
-
-class BasicPerm(BasePermission):
-    """
     Permissions to check if user has a project
     staff api key and is authenticated
     Or user is authenticated admin
@@ -45,13 +28,26 @@ class BasicPerm(BasePermission):
 
     def has_permission(self, request, view):
         # Check if the user has project api key
-        if has_staff_key.has_permission(request, view):
+        #if has_staff_key.has_permission(request, view):
 
-            # Check if the user is authenticated
-            if is_auth_normal.has_permission(request, view):
-                return True
+        # Check if the user is authenticated
+        if is_auth_normal.has_permission(request, view):
+            return True
 
         # Check if the user is an authenticated admin
         if is_auth_admin.has_permission(request, view):
             return True
 
+
+class CustomerOrReadOnly(BasePermission):
+    
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user == obj.user
+    
+
+class OwnerCustomPermission(BasePermission):
+    
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user

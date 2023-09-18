@@ -47,8 +47,6 @@ cd users_api
 
 Setup env & install dependencies
 
-Linux
-
 ```bash
 python -m venv venv
 source venv/bin/activate

@@ -5,7 +5,6 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.validators import validate_email
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from project_api_key.models import ProjectApiKey
 from rest_framework import serializers
 from utils.base.validators import validate_special_char
 from .tokens import account_confirm_token, password_reset_generator
@@ -199,15 +198,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         return value
 
-
-class ProjectApiSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = ProjectApiKey
-        fields = ['pub_key', 'user']
-
-
 class ResetPasswordSerializer(serializers.Serializer):
     uidb64 = serializers.CharField()
     token = serializers.CharField()
@@ -284,42 +274,6 @@ class ForgetChangePasswordSerializer(serializers.ModelSerializer):
                 {"confirm_password": "Confirm password field is required."})
 
         if new_password != confirm_password:
-            raise serializers.ValidationError(
-                {"new_password": "Password fields didn't match."})
-
-        return attrs
-
-    def update(self, instance, validated_data):
-        # Set password
-        new_password = validated_data.get('new_password')
-        instance.set_password(new_password)
-        instance.save()
-
-        return instance
-
-
-class ChangePasswordSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(write_only=True, required=True)
-    new_password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password])
-    confirm_password = serializers.CharField(write_only=True, required=True)
-
-    class Meta:
-        model = User
-        fields = (
-            'id', 'email', 'old_password',
-            'new_password', 'confirm_password',)
-        extra_kwargs = {
-            'email': {'read_only': True},
-        }
-
-    def validate(self, attrs):
-        if not self.instance.check_password(attrs['old_password']):
-            raise serializers.ValidationError(
-                {'old_password': 'Old password is not correct'})
-
-        # Validate if the provided passwords are similar
-        if attrs['new_password'] != attrs['confirm_password']:
             raise serializers.ValidationError(
                 {"new_password": "Password fields didn't match."})
 

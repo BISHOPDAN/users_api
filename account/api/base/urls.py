@@ -26,9 +26,6 @@ urlpatterns = [
     path('token/user/validate/',
          views.TokenVerifyAPIView.as_view(), name='token_validate'),
 
-    path('user/', views.UserAPIView.as_view(), name='user_data'),
-    path('user/change-password/', views.ChangePasswordView.as_view(),
-         name='change_password'),
     path('user/profile/update/',
          views.ProfileAPIView.as_view(), name='detail_profile'),
 ]
