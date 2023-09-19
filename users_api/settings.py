@@ -97,30 +97,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'utils.base.schema.BaseSchema',
-    'APIS_SORTER': 'alpha',
-    'JSON_EDITOR': True,
-    "SECURITY_DEFINITIONS": {
-        "JWT [Bearer {TOKEN}]": {
-            "name": "Authorization",
-            "type": "apiKey",
-            "in": "header",
-        },
-        "API KEY": {
-            "name": "Bearer-Api-Key",
-            "type": "apiKey",
-            "in": "header",
-        },
-        "Secret KEY": {
-            "name": "Bearer-Sec-Api-Key",
-            "type": "apiKey",
-            "in": "header",
-        },
-        "Basic": {
-            "type": "basic",
-            "name": "Authorization",
-        }
-    },
+    "VALIDATOR_URL": "http://localhost:8189",
 }
 
 ROOT_URLCONF = 'users_api.urls'
