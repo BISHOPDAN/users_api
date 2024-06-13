@@ -279,7 +279,7 @@ class ForgetResetPasswordView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    permission_classes = (SuperPerm,)
+    permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserSerializer
 
     def get_queryset(self):

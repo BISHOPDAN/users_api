@@ -32,47 +32,6 @@ def get_model_fields(model):
     return [field.name for field in model._meta.fields]
 
 
-class Crypthex:
-    """
-    Class for encryption and decryption
-    """
-
-    def __init__(self):
-        self.key = settings.ENCRYPTING_KEY
-
-        # Instance the Fernet class with the key
-        self.fernet = Fernet(self.key.encode())
-
-    def encrypt(self, text):
-        """
-        Use the fernet created in the __init__ to encrypt text,
-        which will return an encoded string example
-        of result = b'example'
-        """
-        text = str(text)
-
-        result = self.fernet.encrypt(text.encode())
-        return result.decode()
-
-    def decrypt(self, text):
-        """
-        Use the fernet created in the __init__ to decrypt text,
-        which will return an encoded string
-        example of result = b'example'
-        """
-        text = str(text)
-        try:
-            result = self.fernet.decrypt(text.encode())
-            return result.decode()
-        except InvalidToken:
-            pass
-
-        return False
-
-
-cryptor = Crypthex()
-
-
 def random_otp():
     """
     Generating OTP with 6 digits
