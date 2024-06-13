@@ -290,8 +290,3 @@ STATUS_SET = {
 to delivery destination',
     '435': 'Package transaction already in process or processed',
 }
-
-
-APP_NAME = "Trip Value"
-CLIENT_DOMAIN = "https://tripvalue.com.ng"
-CLIENT_RESET_URL = "/reset-password"
