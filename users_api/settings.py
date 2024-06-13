@@ -188,38 +188,53 @@ MEDIA_URL = '/media/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'loggers': {
-        'basic': {
-            'handlers': ['basic_h'],
-            'level': 'DEBUG',
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
         },
-        'basic.error': {
-            'handlers': ['basic_e'],
-            'level': 'WARNING',
-            'propagate': False,
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
         },
     },
     'handlers': {
-        'basic_h': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file_debug': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
-            'formatter': 'simple',
+            'formatter': 'verbose',
         },
-        'basic_e': {
-            'level': 'WARNING',
+        'file_error': {
+            'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'logs/error.log'),
-            'formatter': 'simple',
+            'formatter': 'verbose',
         },
     },
-    'formatters': {
-        'simple': {
-            'format': '{levelname} : {asctime} : {message}',
-            'style': '{',
-        }
-    }
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'myapp': {
+            'handlers': ['console', 'file_debug', 'file_error'],
+            'level': 'DEBUG',
+        },
+    },
 }
+
+# Only add file handlers if the directory exists (i.e., development environment)
+if not os.path.exists(os.path.join(BASE_DIR, 'logs')):
+    for handler in ['file_debug', 'file_error']:
+        LOGGING['loggers']['myapp']['handlers'].remove(handler)
+        LOGGING['handlers'].pop(handler)
 
 
 PASSWORD_RESET_TIMEOUT = 600
